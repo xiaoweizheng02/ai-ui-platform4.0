@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI-UI一站式设计平台</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#4f46e5',
+            primary-dark: '#4338ca',
+            secondary: '#7c3aed',
+            accent: '#06b6d4',
+            dark: '#1e293b',
+            'gray-light': '#f8fafc',
+            'gray-medium': '#e2e8f0',
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+          },
+          boxShadow: {
+            'soft': '0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03)',
+            'medium': '0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.03)',
+            'large': '0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.02)',
+          },
+        },
+      }
+    }
+  </script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+    
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+    }
+    
+    .gradient-bg {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+    
+    .glass-effect {
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(10px);
+    }
+    
+    .card-hover {
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .card-hover:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    }
+    
+    .fade-in {
+      animation: fadeIn 0.5s ease-in-out;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .btn-primary {
+      background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+      transition: all 0.3s ease;
+    }
+    
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 10px 20px rgba(79, 70, 229, 0.3);
+    }
+    
+    .btn-primary:active {
+      transform: translateY(0);
+    }
+    
+    .feature-icon {
+      background: linear-gradient(135deg, rgba(79, 70, 229, 0.1) 0%, rgba(124, 58, 237, 0.1) 100%);
+    }
+  </style>
+</head>
+<body class="bg-gray-light min-h-screen">
+  <!-- 导航栏 -->
+  <nav class="glass-effect sticky top-0 z-50 border-b border-gray-200">
+    <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 rounded-xl gradient-bg flex items-center justify-center shadow-soft">
+          <i class="fa fa-magic text-white text-xl"></i>
+        </div>
+        <h1 class="text-xl font-bold text-dark">AI-UI一站式设计平台</h1>
+      </div>
+      <div class="flex items-center space-x-6">
+        <span id="user-info" class="text-sm text-gray-600 hidden items-center">
+          <i class="fa fa-user-circle mr-2 text-gray-400"></i>
+          <span id="nickname"></span> 
+          <span class="mx-2 text-gray-300">|</span>
+          <span class="font-medium text-primary">剩余次数: <span id="remain"></span></span>
+        </span>
+        <button id="history-btn" class="px-4 py-2 text-gray-600 hover:text-primary transition-colors hidden items-center">
+          <i class="fa fa-history mr-2"></i> 历史记录
+        </button>
+        <button id="pay-btn" class="px-5 py-2 btn-primary text-white rounded-xl hidden items-center">
+          <i class="fa fa-credit-card mr-2"></i> 充值
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 英雄区 -->
+  <section class="py-16 px-4 bg-gradient-to-b from-white to-gray-light">
+    <div class="container mx-auto text-center fade-in">
+      <div class="inline-block px-4 py-1 bg-primary/10 text-primary rounded-full text-sm font-medium mb-6">
+        <i class="fa fa-star mr-1"></i> 全新升级
+      </div>
+      <h2 class="text-4xl md:text-5xl font-extrabold text-dark mb-6 leading-tight">
+        AI驱动的智能设计
+        <span class="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">工具</span>
+      </h2>
+      <p class="text-xl text-gray-600 max-w-3xl mx-auto mb-10">
+        通过文字描述，快速生成高质量的UI设计稿。支持多种格式导出，让设计流程更加高效和便捷。
+      </p>
+    </div>
+  </section>
+
+  <!-- 主内容区 -->
+  <main class="container mx-auto px-4 py-12">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <!-- 左侧输入区域 -->
+      <div class="lg:col-span-1">
+        <div class="bg-white rounded-2xl shadow-medium p-8 card-hover">
+          <div class="flex items-center space-x-4 mb-8">
+            <div class="w-12 h-12 rounded-xl feature-icon flex items-center justify-center">
+              <i class="fa fa-pencil text-primary text-xl"></i>
+            </div>
+            <h2 class="text-2xl font-bold text-dark">设计输入</h2>
+          </div>
+          
+          <div class="space-y-6">
+            <!-- 设计描述 -->
+            <div>
+              <label for="design-description" class="block text-sm font-semibold text-gray-700 mb-3">
+                <i class="fa fa-comment-o mr-2 text-gray-400"></i>
+                输入设计描述
+              </label>
+              <textarea 
+                id="design-description" 
+                class="w-full h-56 p-5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary resize-none bg-gray-50 transition-all text-gray-700"
+                placeholder="请详细描述您想要的UI设计，例如：'一个现代风格的登录页面，包含用户名、密码输入框和登录按钮，背景为浅蓝色，带有动画效果'"
+              ></textarea>
+            </div>
+            
+            <!-- 草图原型图上传入口 -->
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-3">
+                <i class="fa fa-image mr-2 text-gray-400"></i>
+                上传草图原型图
+              </label>
+              <div class="border-2 border-dashed border-gray-200 rounded-xl p-8 text-center hover:border-primary/50 transition-all bg-gray-50">
+                <input 
+                  type="file" 
+                  id="file-input" 
+                  class="hidden" 
+                  accept="image/*"
+                >
+                <button 
+                  id="upload-btn" 
+                  class="px-6 py-3 bg-primary/5 text-primary rounded-xl hover:bg-primary/10 transition-colors font-semibold flex items-center justify-center mx-auto"
+                >
+                  <i class="fa fa-cloud-upload mr-2"></i> 选择文件
+                </button>
+                <p class="mt-4 text-sm text-gray-500">支持 JPG、PNG、SVG 格式</p>
+                <div id="image-preview" class="mt-6 hidden">
+                  <img id="uploaded-image" class="max-h-48 mx-auto rounded-xl shadow-soft" alt="上传的草图">
+                  <button 
+                    id="remove-image" 
+                    class="mt-4 text-sm text-red-500 hover:text-red-600 font-semibold flex items-center justify-center mx-auto"
+                  >
+                    <i class="fa fa-trash mr-2"></i> 移除图片
+                  </button>
+                </div>
+              </div>
+            </div>
+            
+            <!-- 生成按钮 -->
+            <div class="pt-4">
+              <button 
+                id="generate-btn" 
+                class="w-full py-4 btn-primary text-white rounded-xl hover:shadow-large transition-all flex items-center justify-center font-semibold text-lg"
+              >
+                <span id="generate-text">生成设计</span>
+                <span id="loading" class="ml-3 hidden">
+                  <i class="fa fa-spinner fa-spin"></i>
+                </span>
+              </button>
+            </div>
+            
+            <!-- 提示信息 -->
+            <div class="bg-blue-50 border-l-4 border-blue-500 p-5 rounded-r-xl">
+              <div class="flex">
+                <div class="flex-shrink-0">
+                  <i class="fa fa-lightbulb-o text-blue-500 text-xl"></i>
+                </div>
+                <div class="ml-4">
+                  <p class="text-sm text-blue-800 font-medium">提示</p>
+                  <p class="text-sm text-blue-700 mt-1">
+                    描述越详细，生成的设计越符合您的需求。建议包含风格、布局、颜色等关键信息。
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 右侧预览区域 -->
+      <div class="lg:col-span-2">
+        <div class="bg-white rounded-2xl shadow-medium p-8 card-hover">
+          <div class="flex items-center space-x-4 mb-8">
+            <div class="w-12 h-12 rounded-xl feature-icon flex items-center justify-center">
+              <i class="fa fa-eye text-primary text-xl"></i>
+            </div>
+            <h2 class="text-2xl font-bold text-dark">设计预览</h2>
+          </div>
+          
+          <!-- 预览选项卡 -->
+          <div class="flex space-x-1 bg-gray-100 p-1 rounded-xl mb-6">
+            <button 
+              id="preview-tab" 
+              class="flex-1 px-6 py-3 font-semibold rounded-lg bg-white text-primary shadow-soft transition-all"
+            >
+              <i class="fa fa-eye mr-2"></i> 预览效果
+            </button>
+            <button 
+              id="code-tab" 
+              class="flex-1 px-6 py-3 font-semibold rounded-lg text-gray-600 hover:text-gray-800 transition-all"
+            >
+              <i class="fa fa-code mr-2"></i> 代码编辑
+            </button>
+          </div>
+          
+          <!-- 预览内容 -->
+          <div class="border border-gray-200 rounded-xl overflow-hidden">
+            <div id="empty-state" class="h-[500px] flex items-center justify-center bg-gray-50">
+              <div class="text-center">
+                <div class="w-24 h-24 rounded-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center mx-auto mb-6">
+                  <i class="fa fa-magic text-4xl text-gray-400"></i>
+                </div>
+                <h3 class="text-xl font-semibold text-gray-700 mb-3">准备开始</h3>
+                <p class="text-gray-500 max-w-md mx-auto">输入设计描述并点击生成按钮，体验AI驱动的智能设计</p>
+              </div>
+            </div>
+            <div id="preview-content" class="w-full hidden">
+              <div id="design-preview" class="bg-gray-50 p-6 min-h-[500px]"></div>
+            </div>
+            <div id="code-content" class="w-full hidden">
+              <textarea 
+                id="code-editor" 
+                class="w-full h-[500px] p-6 border-0 focus:outline-none resize-none font-mono text-sm bg-gray-50"
+                placeholder="编辑HTML代码"
+              ></textarea>
+            </div>
+          </div>
+          
+          <!-- 操作按钮 -->
+          <div class="mt-6 flex flex-wrap gap-3">
+            <button 
+              id="save-code" 
+              class="px-5 py-2.5 bg-primary text-white rounded-xl hover:bg-primary-dark transition-all font-medium hidden items-center"
+            >
+              <i class="fa fa-save mr-2"></i> 保存代码
+            </button>
+            <button 
+              id="copy-html" 
+              class="px-5 py-2.5 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 transition-all font-medium hidden items-center"
+            >
+              <i class="fa fa-copy mr-2"></i> 复制HTML
+            </button>
+            <button 
+              id="export-png" 
+              class="px-5 py-2.5 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 transition-all font-medium hidden items-center"
+            >
+              <i class="fa fa-file-image-o mr-2"></i> 导出 PNG
+            </button>
+            <button 
+              id="export-svg" 
+              class="px-5 py-2.5 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 transition-all font-medium hidden items-center"
+            >
+              <i class="fa fa-file-code-o mr-2"></i> 导出 SVG
+            </button>
+            <button 
+              id="export-html" 
+              class="px-5 py-2.5 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 transition-all font-medium hidden items-center"
+            >
+              <i class="fa fa-file-html-o mr-2"></i> 导出 HTML
+            </button>
+            <button 
+              id="open-figma" 
+              class="px-5 py-2.5 bg-purple-600 text-white rounded-xl hover:bg-purple-700 transition-all font-medium hidden items-center"
+            >
+              <i class="fa fa-external-link mr-2"></i> 在Figma中打开
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- 功能特性区 -->
+  <section class="py-20 px-4 bg-white">
+    <div class="container mx-auto">
+      <div class="text-center mb-16">
+        <span class="inline-block px-4 py-1 bg-primary/10 text-primary rounded-full text-sm font-semibold mb-4">
+          核心功能
+        </span>
+        <h2 class="text-3xl md:text-4xl font-extrabold text-dark mb-6">
+          强大的功能特性
+        </h2>
+        <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+          我们提供全面的设计工具，帮助您快速创建和导出高质量的UI设计
+        </p>
+      </div>
+      
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <!-- 特性1 -->
+        <div class="bg-gray-50 rounded-2xl p-8 card-hover">
+          <div class="w-14 h-14 rounded-xl feature-icon flex items-center justify-center mb-6">
+            <i class="fa fa-language text-primary text-2xl"></i>
+          </div>
+          <h3 class="text-xl font-bold text-dark mb-3">智能文字描述</h3>
+          <p class="text-gray-600 leading-relaxed">
+            通过自然语言描述，快速生成符合要求的UI设计，支持多种风格和布局，让设计变得简单高效。
+          </p>
+        </div>
+        
+        <!-- 特性2 -->
+        <div class="bg-gray-50 rounded-2xl p-8 card-hover">
+          <div class="w-14 h-14 rounded-xl feature-icon flex items-center justify-center mb-6">
+            <i class="fa fa-upload text-primary text-2xl"></i>
+          </div>
+          <h3 class="text-xl font-bold text-dark mb-3">草图上传</h3>
+          <p class="text-gray-600 leading-relaxed">
+            上传手绘草图，AI会智能识别并转换为高质量的UI设计，保留您的创意意图，加速设计流程。
+          </p>
+        </div>
+        
+        <!-- 特性3 -->
+        <div class="bg-gray-50 rounded-2xl p-8 card-hover">
+          <div class="w-14 h-14 rounded-xl feature-icon flex items-center justify-center mb-6">
+            <i class="fa fa-download text-primary text-2xl"></i>
+          </div>
+          <h3 class="text-xl font-bold text-dark mb-3">多格式导出</h3>
+          <p class="text-gray-600 leading-relaxed">
+            支持PNG、SVG、HTML等多种格式导出，满足不同场景的设计需求，让您的工作更加灵活。
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 底部信息 -->
+  <footer class="bg-dark text-white py-16">
+    <div class="container mx-auto px-4">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
+        <div>
+          <div class="flex items-center space-x-3 mb-6">
+            <div class="w-12 h-12 rounded-xl gradient-bg flex items-center justify-center">
+              <i class="fa fa-magic text-white text-xl"></i>
+            </div>
+            <h3 class="text-2xl font-bold">AI-UI一站式设计平台</h3>
+          </div>
+          <p class="text-gray-400 leading-relaxed">
+            基于先进的AI技术，为设计师和开发者提供高效的UI设计解决方案，让创意变成现实。
+          </p>
+        </div>
+        <div>
+          <h4 class="text-lg font-semibold mb-6">快速链接</h4>
+          <ul class="space-y-3">
+            <li><a href="#" class="text-gray-400 hover:text-white transition-colors flex items-center">
+              <i class="fa fa-home mr-2"></i> 首页
+            </a></li>
+            <li><a href="/history" class="text-gray-400 hover:text-white transition-colors flex items-center">
+              <i class="fa fa-history mr-2"></i> 历史记录
+            </a></li>
+            <li><a href="/pay" class="text-gray-400 hover:text-white transition-colors flex items-center">
+              <i class="fa fa-credit-card mr-2"></i> 充值
+            </a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="text-lg font-semibold mb-6">联系我们</h4>
+          <p class="text-gray-400 mb-6">
+            如有问题或建议，欢迎随时联系我们
+          </p>
+          <div class="flex space-x-4">
+            <a href="#" class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors">
+              <i class="fa fa-envelope"></i>
+            </a>
+            <a href="#" class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors">
+              <i class="fa fa-github"></i>
+            </a>
+            <a href="#" class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors">
+              <i class="fa fa-twitter"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+      <div class="border-t border-white/10 pt-8 text-center text-gray-400">
+        <p>&copy; 2026 AI-UI一站式设计平台. 保留所有权利.</p>
+      </div>
+    </div>
+  </footer>
+
+
+
+  <script>
+    // 全局变量
+    let currentHtml = '';
+
+    // DOM 元素
+    const elements = {
+      userInfo: document.getElementById('user-info'),
+      nickname: document.getElementById('nickname'),
+      remain: document.getElementById('remain'),
+      historyBtn: document.getElementById('history-btn'),
+      payBtn: document.getElementById('pay-btn'),
+      designDescription: document.getElementById('design-description'),
+      fileInput: document.getElementById('file-input'),
+      uploadBtn: document.getElementById('upload-btn'),
+      imagePreview: document.getElementById('image-preview'),
+      uploadedImage: document.getElementById('uploaded-image'),
+      removeImage: document.getElementById('remove-image'),
+      generateBtn: document.getElementById('generate-btn'),
+      generateText: document.getElementById('generate-text'),
+      loading: document.getElementById('loading'),
+      previewTab: document.getElementById('preview-tab'),
+      codeTab: document.getElementById('code-tab'),
+      emptyState: document.getElementById('empty-state'),
+      previewContent: document.getElementById('preview-content'),
+      designPreview: document.getElementById('design-preview'),
+      codeContent: document.getElementById('code-content'),
+      codeEditor: document.getElementById('code-editor'),
+      saveCode: document.getElementById('save-code'),
+      copyHtml: document.getElementById('copy-html'),
+      exportPng: document.getElementById('export-png'),
+      exportSvg: document.getElementById('export-svg'),
+      exportHtml: document.getElementById('export-html'),
+      openFigma: document.getElementById('open-figma')
+    };
+
+    // 初始化
+    function init() {
+      bindEvents();
+      getUserInfo();
+    }
+
+    // 获取用户信息
+    function getUserInfo() {
+      fetch('/api/user/info')
+      .then(res => res.json())
+      .then(data => {
+        if (data.code === 0) {
+          elements.userInfo.classList.remove('hidden');
+          elements.userInfo.classList.add('flex');
+          elements.nickname.textContent = data.data.nickname;
+          elements.remain.textContent = data.data.remain;
+          elements.historyBtn.classList.remove('hidden');
+          elements.historyBtn.classList.add('flex');
+          elements.payBtn.classList.remove('hidden');
+          elements.payBtn.classList.add('flex');
+        }
+      })
+      .catch(err => {
+        console.error('获取用户信息失败:', err);
+      });
+    }
+
+    // 绑定事件
+    function bindEvents() {
+      // 历史记录
+      elements.historyBtn.addEventListener('click', () => {
+        window.location.href = '/history';
+      });
+
+      // 充值
+      elements.payBtn.addEventListener('click', () => {
+        window.location.href = '/pay';
+      });
+
+      // 文件上传
+      elements.uploadBtn.addEventListener('click', () => {
+        elements.fileInput.click();
+      });
+
+      elements.fileInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            elements.uploadedImage.src = e.target.result;
+            elements.imagePreview.classList.remove('hidden');
+          };
+          reader.readAsDataURL(file);
+        }
+      });
+
+      // 移除图片
+      elements.removeImage.addEventListener('click', () => {
+        elements.imagePreview.classList.add('hidden');
+        elements.fileInput.value = '';
+      });
+
+      // 生成设计
+      elements.generateBtn.addEventListener('click', () => {
+        const prompt = elements.designDescription.value.trim();
+        if (!prompt) {
+          alert('请输入设计描述');
+          return;
+        }
+
+        elements.generateText.textContent = '生成中...';
+        elements.loading.classList.remove('hidden');
+        elements.generateBtn.disabled = true;
+
+        fetch('/api/generate/ui', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ prompt })
+        })
+        .then(res => res.json())
+        .then(data => {
+          elements.generateText.textContent = '生成设计';
+          elements.loading.classList.add('hidden');
+          elements.generateBtn.disabled = false;
+
+          if (data.code === 0) {
+            currentHtml = data.data.html;
+            elements.designPreview.innerHTML = currentHtml;
+            elements.codeEditor.value = currentHtml;
+            elements.emptyState.classList.add('hidden');
+            elements.previewContent.classList.remove('hidden');
+            elements.codeContent.classList.add('hidden');
+            elements.saveCode.classList.remove('hidden');
+            elements.saveCode.classList.add('flex');
+            elements.copyHtml.classList.remove('hidden');
+            elements.copyHtml.classList.add('flex');
+            elements.exportPng.classList.remove('hidden');
+            elements.exportPng.classList.add('flex');
+            elements.exportSvg.classList.remove('hidden');
+            elements.exportSvg.classList.add('flex');
+            elements.exportHtml.classList.remove('hidden');
+            elements.exportHtml.classList.add('flex');
+            elements.openFigma.classList.remove('hidden');
+            elements.openFigma.classList.add('flex');
+            elements.remain.textContent = data.data.remain;
+          } else {
+            alert(data.msg);
+          }
+        })
+        .catch(err => {
+          console.error('生成失败:', err);
+          elements.generateText.textContent = '生成设计';
+          elements.loading.classList.add('hidden');
+          elements.generateBtn.disabled = false;
+          alert('生成失败，请重试');
+        });
+      });
+
+      // 预览选项卡
+      elements.previewTab.addEventListener('click', () => {
+        elements.previewTab.classList.add('bg-white', 'text-primary', 'shadow-soft');
+        elements.previewTab.classList.remove('text-gray-600');
+        elements.codeTab.classList.remove('bg-white', 'text-primary', 'shadow-soft');
+        elements.codeTab.classList.add('text-gray-600');
+        elements.previewContent.classList.remove('hidden');
+        elements.codeContent.classList.add('hidden');
+      });
+
+      elements.codeTab.addEventListener('click', () => {
+        elements.codeTab.classList.add('bg-white', 'text-primary', 'shadow-soft');
+        elements.codeTab.classList.remove('text-gray-600');
+        elements.previewTab.classList.remove('bg-white', 'text-primary', 'shadow-soft');
+        elements.previewTab.classList.add('text-gray-600');
+        elements.codeContent.classList.remove('hidden');
+        elements.previewContent.classList.add('hidden');
+      });
+
+      // 保存代码
+      elements.saveCode.addEventListener('click', () => {
+        currentHtml = elements.codeEditor.value;
+        elements.designPreview.innerHTML = currentHtml;
+        alert('代码已保存');
+      });
+
+      // 导出 PNG
+      elements.exportPng.addEventListener('click', () => {
+        if (!currentHtml) {
+          alert('请先生成设计');
+          return;
+        }
+        
+        elements.exportPng.innerHTML = '<i class="fa fa-spinner fa-spin mr-2"></i> 导出中...';
+        elements.exportPng.disabled = true;
+        
+        html2canvas(elements.designPreview, {
+          scale: 2,
+          useCORS: true,
+          logging: false
+        })
+        .then(canvas => {
+          const link = document.createElement('a');
+          link.download = 'ui-design.png';
+          link.href = canvas.toDataURL('image/png');
+          link.click();
+          
+          elements.exportPng.innerHTML = '<i class="fa fa-file-image-o mr-2"></i> 导出 PNG';
+          elements.exportPng.disabled = false;
+        })
+        .catch(err => {
+          console.error('导出失败:', err);
+          elements.exportPng.innerHTML = '<i class="fa fa-file-image-o mr-2"></i> 导出 PNG';
+          elements.exportPng.disabled = false;
+          alert('导出失败，请重试');
+        });
+      });
+
+      // 导出 SVG
+      elements.exportSvg.addEventListener('click', () => {
+        if (!currentHtml) {
+          alert('请先生成设计');
+          return;
+        }
+        
+        elements.exportSvg.innerHTML = '<i class="fa fa-spinner fa-spin mr-2"></i> 导出中...';
+        elements.exportSvg.disabled = true;
+        
+        try {
+          // 创建SVG根元素
+          const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+          svg.setAttribute('width', elements.designPreview.offsetWidth);
+          svg.setAttribute('height', elements.designPreview.offsetHeight);
+          svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+          
+          // 遍历设计预览中的所有元素并转换为SVG
+          const elementsToConvert = elements.designPreview.querySelectorAll('*');
+          elementsToConvert.forEach(element => {
+            const svgElement = convertElementToSvg(element);
+            if (svgElement) {
+              svg.appendChild(svgElement);
+            }
+          });
+          
+          // 生成SVG文件
+          const svgData = new XMLSerializer().serializeToString(svg);
+          const svgBlob = new Blob([svgData], {type: 'image/svg+xml;charset=utf-8'});
+          const svgUrl = URL.createObjectURL(svgBlob);
+          
+          // 下载SVG文件
+          const link = document.createElement('a');
+          link.download = 'ui-design.svg';
+          link.href = svgUrl;
+          link.click();
+          
+          // 清理
+          URL.revokeObjectURL(svgUrl);
+          
+          elements.exportSvg.innerHTML = '<i class="fa fa-file-code-o mr-2"></i> 导出 SVG';
+          elements.exportSvg.disabled = false;
+        } catch (err) {
+          console.error('导出SVG失败:', err);
+          elements.exportSvg.innerHTML = '<i class="fa fa-file-code-o mr-2"></i> 导出 SVG';
+          elements.exportSvg.disabled = false;
+          alert('导出SVG失败，请重试');
+        }
+      });
+
+      // 将HTML元素转换为SVG元素
+      function convertElementToSvg(element) {
+        const computedStyle = window.getComputedStyle(element);
+        const bounds = element.getBoundingClientRect();
+        const designBounds = elements.designPreview.getBoundingClientRect();
+        
+        // 计算相对位置
+        const x = bounds.left - designBounds.left;
+        const y = bounds.top - designBounds.top;
+        const width = bounds.width;
+        const height = bounds.height;
+        
+        // 跳过隐藏元素
+        if (computedStyle.display === 'none' || computedStyle.visibility === 'hidden') {
+          return null;
+        }
+        
+        // 创建SVG组元素
+        const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        g.setAttribute('transform', `translate(${x}, ${y})`);
+        
+        // 处理背景
+        if (computedStyle.backgroundColor !== 'rgba(0, 0, 0, 0)') {
+          const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+          rect.setAttribute('width', width);
+          rect.setAttribute('height', height);
+          rect.setAttribute('fill', computedStyle.backgroundColor);
+          
+          // 处理圆角
+          const borderRadius = computedStyle.borderRadius;
+          if (borderRadius !== '0px') {
+            rect.setAttribute('rx', borderRadius);
+            rect.setAttribute('ry', borderRadius);
+          }
+          
+          // 处理边框
+          if (computedStyle.border !== '0px none rgb(0, 0, 0)') {
+            rect.setAttribute('stroke', computedStyle.borderColor);
+            rect.setAttribute('stroke-width', computedStyle.borderWidth);
+          }
+          
+          g.appendChild(rect);
+        }
+        
+        // 处理文本
+        if (element.nodeType === Node.TEXT_NODE || 
+            (element.nodeType === Node.ELEMENT_NODE && 
+             ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'span', 'a', 'button'].includes(element.tagName.toLowerCase()))) {
+          const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+          text.textContent = element.textContent || element.innerText;
+          text.setAttribute('x', '10');
+          text.setAttribute('y', '20');
+          text.setAttribute('fill', computedStyle.color);
+          text.setAttribute('font-size', computedStyle.fontSize);
+          text.setAttribute('font-family', computedStyle.fontFamily);
+          text.setAttribute('font-weight', computedStyle.fontWeight);
+          
+          g.appendChild(text);
+        }
+        
+        // 处理图片
+        if (element.tagName && element.tagName.toLowerCase() === 'img' && element.src) {
+          const image = document.createElementNS('http://www.w3.org/2000/svg', 'image');
+          image.setAttribute('width', width);
+          image.setAttribute('height', height);
+          image.setAttribute('href', element.src);
+          
+          g.appendChild(image);
+        }
+        
+        return g;
+      }
+
+      // 导出 HTML
+      elements.exportHtml.addEventListener('click', () => {
+        window.location.href = `/api/export/html?html=${encodeURIComponent(currentHtml)}`;
+      });
+
+      // 复制HTML
+      elements.copyHtml.addEventListener('click', () => {
+        navigator.clipboard.writeText(currentHtml)
+          .then(() => {
+            alert('HTML代码已复制到剪贴板');
+          })
+          .catch(err => {
+            console.error('复制失败:', err);
+            alert('复制失败，请手动复制');
+          });
+      });
+
+      // 在Figma中打开
+      elements.openFigma.addEventListener('click', () => {
+        if (!currentHtml) {
+          alert('请先生成设计');
+          return;
+        }
+        
+        // 复制HTML代码到剪贴板
+        navigator.clipboard.writeText(currentHtml)
+          .then(() => {
+            // 打开Figma
+            window.open('https://www.figma.com/files/recent', '_blank');
+            // 显示提示
+            alert('HTML代码已复制到剪贴板，请在Figma中创建新文件并粘贴代码');
+          })
+          .catch(err => {
+            console.error('复制失败:', err);
+            // 打开Figma
+            window.open('https://www.figma.com/files/recent', '_blank');
+            // 显示提示
+            alert('请手动复制HTML代码并在Figma中创建新文件');
+          });
+      });
+    }
+
+    // 初始化
+    init();
+  </script>
+</body>
+</html>

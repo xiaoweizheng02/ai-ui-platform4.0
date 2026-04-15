@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>充值 - AI UI 设计生成平台</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#4f46e5',
+            secondary: '#7c3aed',
+            accent: '#06b6d4',
+          },
+        },
+      }
+    }
+  </script>
+</head>
+<body class="bg-gray-50 font-sans">
+  <!-- 导航栏 -->
+  <nav class="bg-white shadow-md">
+    <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+      <div class="flex items-center space-x-2">
+        <i class="fa fa-paint-brush text-primary text-2xl"></i>
+        <h1 class="text-xl font-bold text-gray-800">AI UI 设计生成平台</h1>
+      </div>
+      <div class="flex items-center space-x-4">
+        <span id="user-info" class="text-sm text-gray-600">
+          <span id="nickname"></span> | 剩余次数: <span id="remain"></span>
+        </span>
+        <a href="/" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition-colors">
+          首页
+        </a>
+        <a href="/history" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition-colors">
+          历史记录
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 主内容区 -->
+  <main class="container mx-auto px-4 py-8">
+    <h2 class="text-2xl font-bold mb-6">充值</h2>
+    
+    <div class="bg-white rounded-lg shadow-md p-6">
+      <div class="mb-6">
+        <h3 class="text-lg font-semibold mb-4">选择充值套餐</h3>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div class="border rounded-lg p-4 hover:border-primary cursor-pointer transition-colors" data-times="10">
+            <div class="text-center">
+              <h4 class="font-semibold">基础套餐</h4>
+              <p class="text-2xl font-bold text-primary mt-2">10次</p>
+              <p class="text-gray-500 mt-1">适合个人用户</p>
+            </div>
+          </div>
+          <div class="border rounded-lg p-4 hover:border-primary cursor-pointer transition-colors" data-times="50">
+            <div class="text-center">
+              <h4 class="font-semibold">专业套餐</h4>
+              <p class="text-2xl font-bold text-primary mt-2">50次</p>
+              <p class="text-gray-500 mt-1">适合团队使用</p>
+            </div>
+          </div>
+          <div class="border rounded-lg p-4 hover:border-primary cursor-pointer transition-colors" data-times="200">
+            <div class="text-center">
+              <h4 class="font-semibold">企业套餐</h4>
+              <p class="text-2xl font-bold text-primary mt-2">200次</p>
+              <p class="text-gray-500 mt-1">适合企业级应用</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="mb-6">
+        <h3 class="text-lg font-semibold mb-4">支付方式</h3>
+        <div class="flex space-x-4">
+          <div class="flex items-center">
+            <input type="radio" id="wechat" name="payment" value="wechat" class="mr-2">
+            <label for="wechat" class="flex items-center">
+              <i class="fa fa-weixin text-green-500 text-2xl mr-2"></i>
+              微信支付
+            </label>
+          </div>
+          <div class="flex items-center">
+            <input type="radio" id="alipay" name="payment" value="alipay" class="mr-2">
+            <label for="alipay" class="flex items-center">
+              <i class="fa fa-credit-card text-blue-500 text-2xl mr-2"></i>
+              支付宝
+            </label>
+          </div>
+        </div>
+      </div>
+      
+      <div class="text-center">
+        <button id="pay-btn" class="px-8 py-3 bg-primary text-white rounded-md hover:bg-primary/90 transition-colors text-lg font-medium">
+          立即支付
+        </button>
+        <p class="text-gray-500 mt-4">
+          <i class="fa fa-info-circle mr-1"></i>
+          测试环境，点击支付即可完成充值
+        </p>
+      </div>
+    </div>
+  </main>
+
+  <!-- 底部信息 -->
+  <footer class="bg-white border-t border-gray-200 mt-8 py-4">
+    <div class="container mx-auto px-4 text-center text-gray-500 text-sm">
+      <p>AI UI 设计生成平台 - 基于豆包AI的智能设计工具</p>
+    </div>
+  </footer>
+
+  <script>
+    // 全局变量
+    let selectedTimes = 10;
+
+    // DOM 元素
+    const elements = {
+      nickname: document.getElementById('nickname'),
+      remain: document.getElementById('remain'),
+      payBtn: document.getElementById('pay-btn')
+    };
+
+    // 初始化
+    function init() {
+      getUserInfo();
+      bindEvents();
+    }
+
+    // 获取用户信息
+    function getUserInfo() {
+      fetch('/api/user/info')
+      .then(res => res.json())
+      .then(data => {
+        if (data.code === 0) {
+          elements.nickname.textContent = data.data.nickname;
+          elements.remain.textContent = data.data.remain;
+        }
+      })
+      .catch(err => {
+        console.error('获取用户信息失败:', err);
+      });
+    }
+
+    // 绑定事件
+    function bindEvents() {
+      // 选择套餐
+      document.querySelectorAll('[data-times]').forEach(item => {
+        item.addEventListener('click', () => {
+          // 移除所有选中状态
+          document.querySelectorAll('[data-times]').forEach(i => {
+            i.classList.remove('border-primary', 'bg-primary/5');
+          });
+          // 添加选中状态
+          item.classList.add('border-primary', 'bg-primary/5');
+          // 设置选中的次数
+          selectedTimes = parseInt(item.dataset.times);
+        });
+      });
+
+      // 支付按钮
+      elements.payBtn.addEventListener('click', () => {
+        fetch('/api/pay/wxpay', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ times: selectedTimes })
+        })
+        .then(res => res.json())
+        .then(data => {
+          if (data.code === 0) {
+            alert('充值成功！');
+            // 更新剩余次数
+            elements.remain.textContent = data.remain;
+          } else {
+            alert(data.msg);
+          }
+        })
+        .catch(err => {
+          console.error('充值失败:', err);
+          alert('充值失败，请重试');
+        });
+      });
+    }
+
+    // 初始化
+    init();
+  </script>
+</body>
+</html>
