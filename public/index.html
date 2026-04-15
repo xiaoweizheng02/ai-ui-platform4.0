@@ -542,17 +542,23 @@
 
           if (data.code === 0) {
             let rawHtml = data.data.html;
-            // 过滤掉完整的HTML结构标签，只保留核心内容
-            currentHtml = rawHtml
-              .replace(/<!DOCTYPE[^>]*>/i, '')
-              .replace(/<html[^>]*>/i, '')
-              .replace(/<head[^>]*>.*?<\/head>/is, '')
-              .replace(/<body[^>]*>/i, '')
-              .replace(/<\/body>/i, '')
-              .replace(/<\/html>/i, '')
-              .trim();
+            // 使用iframe隔离显示生成的内容，防止样式冲突和布局溢出
+            const iframe = document.createElement('iframe');
+            iframe.style.width = '100%';
+            iframe.style.height = '100%';
+            iframe.style.border = 'none';
+            iframe.style.minHeight = '500px';
             
-            elements.designPreview.innerHTML = currentHtml;
+            // 等待iframe加载完成后设置内容
+            iframe.onload = function() {
+              iframe.contentDocument.open();
+              iframe.contentDocument.write(rawHtml);
+              iframe.contentDocument.close();
+            };
+            
+            // 清空预览区域并添加iframe
+            elements.designPreview.innerHTML = '';
+            elements.designPreview.appendChild(iframe);
             elements.codeEditor.value = rawHtml;
             elements.emptyState.classList.add('hidden');
             elements.previewContent.classList.remove('hidden');
