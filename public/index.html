@@ -541,9 +541,19 @@
           elements.generateBtn.disabled = false;
 
           if (data.code === 0) {
-            currentHtml = data.data.html;
+            let rawHtml = data.data.html;
+            // 过滤掉完整的HTML结构标签，只保留核心内容
+            currentHtml = rawHtml
+              .replace(/<!DOCTYPE[^>]*>/i, '')
+              .replace(/<html[^>]*>/i, '')
+              .replace(/<head[^>]*>.*?<\/head>/is, '')
+              .replace(/<body[^>]*>/i, '')
+              .replace(/<\/body>/i, '')
+              .replace(/<\/html>/i, '')
+              .trim();
+            
             elements.designPreview.innerHTML = currentHtml;
-            elements.codeEditor.value = currentHtml;
+            elements.codeEditor.value = rawHtml;
             elements.emptyState.classList.add('hidden');
             elements.previewContent.classList.remove('hidden');
             elements.codeContent.classList.add('hidden');
