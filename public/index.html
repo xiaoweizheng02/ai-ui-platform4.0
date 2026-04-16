@@ -515,41 +515,11 @@
         elements.fileInput.value = '';
       });
 
-      // 检查用户使用次数
-      function checkUsageLimit() {
-        const today = new Date().toDateString();
-        const usageData = JSON.parse(localStorage.getItem('aiui_usage') || '{}');
-        
-        if (usageData.date === today && usageData.count >= 1) {
-          // 超过每日使用限制
-          alert('您今天的试用次数已用完，请充值后继续使用');
-          // 跳转到充值页面
-          window.location.href = '/pay';
-          return false;
-        }
-        
-        // 更新使用次数
-        if (usageData.date !== today) {
-          usageData.date = today;
-          usageData.count = 1;
-        } else {
-          usageData.count += 1;
-        }
-        
-        localStorage.setItem('aiui_usage', JSON.stringify(usageData));
-        return true;
-      }
-
       // 生成设计
       elements.generateBtn.addEventListener('click', () => {
         const prompt = elements.designDescription.value.trim();
         if (!prompt) {
           alert('请输入设计描述');
-          return;
-        }
-
-        // 检查使用次数限制
-        if (!checkUsageLimit()) {
           return;
         }
 
