@@ -164,26 +164,14 @@
         </h3>
         <div class="space-y-4">
           <div class="flex items-center payment-option" data-method="wechat">
-            <div class="w-6 h-6 rounded-full border-2 border-gray-300 flex items-center justify-center cursor-pointer">
-              <div class="w-4 h-4 rounded-full bg-primary hidden method-check"></div>
+            <div class="w-6 h-6 rounded-full border-2 border-primary flex items-center justify-center cursor-pointer">
+              <div class="w-4 h-4 rounded-full bg-primary method-check"></div>
             </div>
             <label class="ml-4 flex items-center cursor-pointer">
               <i class="fa fa-weixin text-green-500 text-2xl mr-3"></i>
               <div>
                 <div class="font-medium">微信支付</div>
                 <div class="text-sm text-gray-500">推荐使用微信扫码支付</div>
-              </div>
-            </label>
-          </div>
-          <div class="flex items-center payment-option" data-method="alipay">
-            <div class="w-6 h-6 rounded-full border-2 border-gray-300 flex items-center justify-center cursor-pointer">
-              <div class="w-4 h-4 rounded-full bg-primary hidden method-check"></div>
-            </div>
-            <label class="ml-4 flex items-center cursor-pointer">
-              <i class="fa fa-credit-card text-blue-500 text-2xl mr-3"></i>
-              <div>
-                <div class="font-medium">支付宝</div>
-                <div class="text-sm text-gray-500">使用支付宝扫码支付</div>
               </div>
             </label>
           </div>
@@ -474,48 +462,38 @@
     }
 
     // 显示收款码
-    function showQrCode() {
-      // 计算金额
-      let amount = 0;
-      switch(selectedTimes) {
-        case 10:
-          amount = 9.9;
-          break;
-        case 50:
-          amount = 39.9;
-          break;
-        case 200:
-          amount = 99.9;
-          break;
-      }
-      
-      // 显示金额
-      elements.paymentAmount.textContent = `支付金额：¥${amount}`;
-      
-      // 显示收款码
-      let qrCodeHtml = '';
-      if (selectedMethod === 'wechat') {
-        qrCodeHtml = `
+      function showQrCode() {
+        // 计算金额
+        let amount = 0;
+        switch(selectedTimes) {
+          case 10:
+            amount = 9.9;
+            break;
+          case 50:
+            amount = 39.9;
+            break;
+          case 200:
+            amount = 99.9;
+            break;
+        }
+        
+        // 显示金额
+        elements.paymentAmount.textContent = `支付金额：¥${amount}`;
+        
+        // 显示收款码
+        let qrCodeHtml = `
           <div class="w-64 h-64 bg-white p-4 rounded-xl shadow-soft mx-auto">
-            <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=WeChat%20QR%20code%20for%20payment%20with%20green%20background%20and%20user%20avatar&image_size=square" alt="微信收款码" class="w-full h-full object-contain">
+            <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=WeChat%20QR%20code%20for%20payment%20with%20green%20background%20and%20user%20avatar%20named%20xiaowei&image_size=square" alt="微信收款码" class="w-full h-full object-contain">
           </div>
           <div class="mt-4 font-medium">微信收款码</div>
         `;
-      } else {
-        qrCodeHtml = `
-          <div class="w-64 h-64 bg-white p-4 rounded-xl shadow-soft mx-auto">
-            <img src="https://via.placeholder.com/200x200?text=Alipay+QR+Code" alt="支付宝收款码" class="w-full h-full object-contain">
-          </div>
-          <div class="mt-4 font-medium">支付宝收款码</div>
-        `;
+        elements.qrCodeContent.innerHTML = qrCodeHtml;
+        
+        // 显示确认支付部分
+        setTimeout(() => {
+          elements.paymentConfirm.classList.remove('hidden');
+        }, 1000);
       }
-      elements.qrCodeContent.innerHTML = qrCodeHtml;
-      
-      // 显示确认支付部分
-      setTimeout(() => {
-        elements.paymentConfirm.classList.remove('hidden');
-      }, 1000);
-    }
 
     // 重置支付界面
     function resetPayment() {
