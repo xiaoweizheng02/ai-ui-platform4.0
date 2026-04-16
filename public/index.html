@@ -572,6 +572,8 @@
 
           if (data.code === 0) {
             let rawHtml = data.data.html;
+            // 更新currentHtml变量
+            currentHtml = rawHtml;
             // 使用iframe隔离显示生成的内容，防止样式冲突和布局溢出
             const iframe = document.createElement('iframe');
             iframe.style.width = '100%';
