@@ -544,23 +544,8 @@
             let rawHtml = data.data.html;
             // 更新currentHtml变量
             currentHtml = rawHtml;
-            // 使用iframe隔离显示生成的内容，防止样式冲突和布局溢出
-            const iframe = document.createElement('iframe');
-            iframe.style.width = '100%';
-            iframe.style.height = '100%';
-            iframe.style.border = 'none';
-            iframe.style.minHeight = '500px';
-            
-            // 等待iframe加载完成后设置内容
-            iframe.onload = function() {
-              iframe.contentDocument.open();
-              iframe.contentDocument.write(rawHtml);
-              iframe.contentDocument.close();
-            };
-            
-            // 清空预览区域并添加iframe
-            elements.designPreview.innerHTML = '';
-            elements.designPreview.appendChild(iframe);
+            // 直接显示生成的内容，不使用iframe，确保导出时能正确捕获图片
+            elements.designPreview.innerHTML = rawHtml;
             elements.codeEditor.value = rawHtml;
             elements.emptyState.classList.add('hidden');
             elements.previewContent.classList.remove('hidden');
