@@ -16,8 +16,44 @@ const defaultUser = { nickname: "访客", remain: 9999, history: [] };
 
   try {
     // 尝试使用豆包API
-    // 注意：由于API Key和模型ID可能无效，这里使用模拟数据
-    // 实际部署时需要替换为有效的API配置
+    try {
+      const apiKey = process.env.DOUBAO_API_KEY || "ark-8a8c1b96-5c89-402d-ad5e-6fbc1f7b0a8d-e242a";
+      const resp = await axios({
+        method: "POST",
+        url: "https://ark.cn-beijing.volces.com/api/v3/chat/completions",
+        headers: {
+          "Authorization": "Bearer " + apiKey,
+          "Content-Type": "application/json"
+        },
+        data: {
+          model: "ep-m-20260320153951-8x8wk",
+          messages: [
+            {
+              role: "system",
+              content: "你是顶级UI工程师。只返回完整可直接运行的HTML+TailwindCSS代码。不要解释、不要markdown、不要代码块、不要多余内容。界面要求：美观、现代、响应式、商用级、配色高级、布局干净、带卡片、导航、表格、按钮、表单、弹窗。"
+            },
+            {
+              role: "user",
+              content: prompt
+            }
+          ],
+          max_tokens: 5000,
+          temperature: 0.6
+        }
+      });
+
+      let html = resp.data.choices[0].message.content || "";
+      html = html.replace(/```html|```/g, "").trim();
+
+      // 记录到历史
+      defaultUser.history.push({ prompt, html, time: new Date().toLocaleString() });
+
+      // 返回生成的HTML
+      res.json({ code: 0, data: { html, remain: defaultUser.remain } });
+      return;
+    } catch (apiError) {
+      console.error('API调用失败，使用模拟数据:', apiError.message);
+    }
     
     // 模拟生成的HTML代码
     const mockHtml = `
