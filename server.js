@@ -11,7 +11,10 @@ app.use(express.static('public'));
 // 模拟用户数据，无需登录
 const defaultUser = { nickname: "访客", remain: 9999, history: [] };
 
-// ==============================// 豆包 API 生成 UI// ==============================app.post('/api/generate/ui', async (req, res) => {
+// ==============================
+// 豆包 API 生成 UI
+// ==============================
+app.post('/api/generate/ui', async (req, res) => {
   const { prompt } = req.body;
 
   try {
